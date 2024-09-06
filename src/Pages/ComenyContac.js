@@ -7,7 +7,6 @@ import MediosContacto from '../Components/MedioContacto';
 import '../Styles/Inicio.css';
 // Imagenes a Utilizar
 
-
 function ComenyContac() {
   return (
     <main className="inicio">

@@ -1,0 +1,33 @@
+.comodin-container {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .comodin-title {
+    color: #D9534F;
+    margin-bottom: 20px;
+  }
+  
+  .comodin-text {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .comodin-contact {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0275D8;
+  }
+  
+  .comodin-footer {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
+  }

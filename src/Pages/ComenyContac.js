@@ -1,12 +1,12 @@
 import React from 'react';
 // Componentes a Utilizar
 import Header from '../Components/Header';
-import Calendario from '../Components/Calendario';
-import Formulario from '../Components/Formulario'; // Importa el nuevo componente
+import Formulario from '../Components/Formulario';
+import MediosContacto from '../Components/MedioContacto';
 // Estilos a Utilizar
 import '../Styles/Inicio.css';
 // Imagenes a Utilizar
-//import ImagenDefault from '../Images/FaltaImagen.png';
+
 
 function ComenyContac() {
   return (
@@ -14,10 +14,7 @@ function ComenyContac() {
       <Header />
       <section className="contacto">
         <Formulario />
-      </section>
-      <section className="intro">
-        <h2>Otros medios</h2>
-        
+        <MediosContacto />
       </section>
     </main>
   );

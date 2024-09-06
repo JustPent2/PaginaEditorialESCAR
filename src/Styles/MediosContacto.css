@@ -1,0 +1,41 @@
+.medios-contacto {
+    margin: 50px auto;
+    max-width: 1200px;
+    text-align: center;
+  }
+  
+  .medios-contacto h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .redes-sociales {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+  }
+  
+  .redes-sociales li {
+    display: flex;
+    align-items: center;
+  }
+  
+  .redes-sociales img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+  
+  .redes-sociales a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  
+  .redes-sociales a:hover {
+    color: #0056b3;
+  }

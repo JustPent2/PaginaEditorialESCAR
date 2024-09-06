@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './Post.css';
+import React from 'react';
+import '../Styles/Post.css';
 
 function PracticaParcial2({titulo, descripcion, imagen1, nombre}){
     return(

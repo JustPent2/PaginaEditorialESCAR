@@ -1,0 +1,23 @@
+.search-bar-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .search-bar-container label {
+    margin-right: 10px;
+  }
+  
+  .search-bar-container input {
+    width: 200px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  
+  .search-bar-container button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }

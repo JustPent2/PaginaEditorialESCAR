@@ -1,0 +1,25 @@
+.text-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 600px;
+    margin: 20px auto;
+  }
+  
+  .form-field {
+    display: flex;
+    justify-content: space-between;
+    width: 45%; /* Ancho de cada columna */
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-size: 14px;
+    width: 40%; /* Ajustar el ancho de las etiquetas */
+  }
+  
+  input[type="text"] {
+    width: 55%;
+    padding: 8px;
+    font-size: 14px;
+  }

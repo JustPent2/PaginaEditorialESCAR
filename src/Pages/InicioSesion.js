@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// Componentes a Utilizar
-
 // Estilos a Utilizar
 import '../Styles/InicioSesion.css';
 // Imagenes a Utilizar

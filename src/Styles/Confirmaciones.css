@@ -1,0 +1,28 @@
+.confirmaciones-container {
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    gap: 20px; /* Añade espacio entre los botones */
+    margin-top: 20px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .continuar {
+    background-color: #28a745; /* Verde para continuar */
+    color: white;
+  }
+  
+  .cancelar {
+    background-color: #dc3545; /* Rojo para cancelar */
+    color: white;
+  }
+  
+  .btn:hover {
+    opacity: 0.8;
+  }

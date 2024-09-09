@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import HeaderAdmin from '../Components/HeaderAdmin';
 import DataTable from '../Components/DataTable';
 import SearchBar from '../Components/SearchBar';
+import Confirmaciones from '../Components/Confirmaciones';
 // Estilos a Utilizar
 import '../Styles/GestionVentas.css';
 import '../Styles/Inicio.css';
@@ -48,6 +49,7 @@ function GestionVentas() {
               <p>Contenido relacionado con los pedidos.</p>
               <SearchBar />
               <DataTable/>
+              <Confirmaciones/>
             </div>
           )}
           {activeTab === 'Ventas' && (
@@ -56,6 +58,7 @@ function GestionVentas() {
               <p>Contenido relacionado con las ventas.</p>
               <SearchBar />
               <DataTable/>
+              <Confirmaciones/>
             </div>
           )}
           {activeTab === 'Consignación' && (
@@ -63,7 +66,11 @@ function GestionVentas() {
               <h2>Gestión de Consignación</h2>
               <p>Contenido relacionado con la consignación.</p>
               <SearchBar />
+              <p>Ventas</p>
               <DataTable/>
+              <p>Consignaciones</p>
+              <DataTable/>
+              <Confirmaciones/>
             </div>
           )}
         </div>

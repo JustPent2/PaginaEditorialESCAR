@@ -9,7 +9,8 @@
   }
   
   .intro-image {
-    width: 40%;
+    width: 400px;
+    height: 400px;
     align-items: center;
     text-align: justify;
   }

@@ -18,9 +18,7 @@ function Inicio() {
             sagittis elit, ac commodo dolor lacus eget libero. Fusce tincidunt, urna et rutrum bibendum, 
             lacus arcu rutrum arcu, nec viverra nulla orci eu sem. Sed eget nisi felis. Donec id faucibus lorem. 
             Curabitur tincidunt bibendum nibh a molestie. Suspendisse iaculis neque justo, convallis fermentum mi 
-            vestibulum non. Proin sollicitudin pulvinar metus, vestibulum molestie massa molestie pretium. Mauris tellus dolor, 
-            faucibus ut libero vulputate, pretium feugiat purus. Fusce quis malesuada dui, eget tristique ligula. 
-            Praesent mattis interdum eros ac tempor. Etiam luctus sem eu diam tempus, sed lobortis lorem tristique.</p>
+            vestibulum non.</p>
         </div>
       </section>
       <section className="galeria">

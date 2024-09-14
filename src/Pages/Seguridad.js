@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 // Componentes a Utilizar
 import HeaderAdmin from '../Components/HeaderAdmin';
-import CRUD from '../Components/Crud';
-import TextArea from '../Components/TextForm';
+import TextAreaSeguridad from '../Components/TextFormSeguridad';
 import DataTable from '../Components/DataTable';
 import SearchBar from '../Components/SearchBar';
 // Estilos a Utilizar
@@ -41,15 +40,12 @@ function Seguridad() {
             {activeTab === 'GestionUsuarios' && (
               <div>
                 <h2>Gestión de Usuarios</h2>
-                <CRUD/>
-                <TextArea/>
-                <DataTable/>
+                <TextAreaSeguridad/>
               </div>
             )}
             {activeTab === 'Bitacora' && (
               <div>
                 <h2>Bitácora</h2>
-                <p>Aquí puedes revisar los registros y actividades realizadas en el sistema.</p>
                 <SearchBar />
                 <DataTable/>
               </div>

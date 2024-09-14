@@ -3,7 +3,12 @@ import '../Styles/DataTable.css'; // Archivo CSS para los estilos de la tabla
 
 function DataTable() {
   // Simulación de datos de ejemplo
-  const [data, setData] = useState([
+  /*const [data, setData] = useState([
+    { nombre1: "Ejemplo 1", nombre2: "Ejemplo 2", nombre3: "Ejemplo 3", nombre4: "Ejemplo 4", nombre5: "Ejemplo 5", nombre6: "Ejemplo 6", nombre7: "Ejemplo 7", nombre8: "Ejemplo 8" },
+    { nombre1: "Dato 1", nombre2: "Dato 2", nombre3: "Dato 3", nombre4: "Dato 4", nombre5: "Dato 5", nombre6: "Dato 6", nombre7: "Dato 7", nombre8: "Dato 8" },
+  ]);*/
+
+  const [data] = useState([
     { nombre1: "Ejemplo 1", nombre2: "Ejemplo 2", nombre3: "Ejemplo 3", nombre4: "Ejemplo 4", nombre5: "Ejemplo 5", nombre6: "Ejemplo 6", nombre7: "Ejemplo 7", nombre8: "Ejemplo 8" },
     { nombre1: "Dato 1", nombre2: "Dato 2", nombre3: "Dato 3", nombre4: "Dato 4", nombre5: "Dato 5", nombre6: "Dato 6", nombre7: "Dato 7", nombre8: "Dato 8" },
   ]);

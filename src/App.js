@@ -1,4 +1,6 @@
 import React from 'react';
+// Estilos a Utilizar
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 // Páginas de Principal a Utilizar
 import Inicio from './Pages/Inicio';

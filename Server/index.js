@@ -14,7 +14,7 @@ const db = mysql.createConnection({
     database: "editorial_db"
 });
 
-// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "USUARIOS"
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "USUARIOS" -----------------------------------------------
 app.post("/create", (req,res)=>{
     const nombre = req.body.nombre;
     const contrasenia = req.body.contrasenia;
@@ -78,11 +78,76 @@ app.delete("/delete/:id", (req,res)=>{
     );
 });
 
-// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "INVENTARIO"
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "INVENTARIO" -----------------------------------------------
 
-// ... Contenido
+app.post("/createInventario", (req, res) => {
+    const titulo = req.body.titulo;
+    const descripcion = req.body.descripcion;
+    const precio_sugerido = req.body.precio_sugerido;
+    const cantidad_disponible = req.body.cantidad_disponible;
+    const estado = req.body.estado || 'disponible'; // Si no se especifica, por defecto es 'disponible'
 
-// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO"
+    db.query(
+        'INSERT INTO inventario_productos(titulo, descripcion, precio_sugerido, cantidad_disponible, estado) VALUES(?, ?, ?, ?, ?)',
+        [titulo, descripcion, precio_sugerido, cantidad_disponible, estado],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result);
+            }
+        }
+    );
+});
+
+app.get("/registrosInventario", (req, res) => {
+    db.query('SELECT * FROM inventario_productos',
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result);
+            }
+        }
+    );
+});
+
+app.put("/updateInventario", (req, res) => {
+    const id = req.body.id;
+    const titulo = req.body.titulo;
+    const descripcion = req.body.descripcion;
+    const precio_sugerido = req.body.precio_sugerido;
+    const cantidad_disponible = req.body.cantidad_disponible;
+    const estado = req.body.estado;
+
+    db.query(
+        'UPDATE inventario_productos SET titulo=?, descripcion=?, precio_sugerido=?, cantidad_disponible=?, estado=? WHERE id=?',
+        [titulo, descripcion, precio_sugerido, cantidad_disponible, estado, id],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result);
+            }
+        }
+    );
+});
+
+app.delete("/deleteInventario/:id", (req, res) => {
+    const id = req.params.id;
+
+    db.query('DELETE FROM inventario_productos WHERE id=?', id,
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result);
+            }
+        }
+    );
+});
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO" -----------------------------------------------
 
 // ... Contenido
 

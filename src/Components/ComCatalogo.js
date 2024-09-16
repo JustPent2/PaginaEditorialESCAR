@@ -35,6 +35,36 @@ const productsData = [
     price: 50.00,
     image: ImagenDefault,
   },
+  {
+    id: 6,
+    name: 'Producto 5',
+    price: 50.00,
+    image: ImagenDefault,
+  },
+  {
+    id: 7,
+    name: 'Producto 6',
+    price: 50.00,
+    image: ImagenDefault,
+  },
+  {
+    id: 8,
+    name: 'Producto 7',
+    price: 50.00,
+    image: ImagenDefault,
+  },
+  {
+    id: 9,
+    name: 'Producto 8',
+    price: 50.00,
+    image: ImagenDefault,
+  },
+  {
+    id: 10,
+    name: 'Producto 9',
+    price: 50.00,
+    image: ImagenDefault,
+  },
 ];
 
 function ComCatalogo() {
@@ -83,6 +113,8 @@ function ComCatalogo() {
                 <div className="cart-total">
                   <h3>Total:</h3>
                   <span className="total-pagar">${totalPrice}</span>
+                  {/* REALIZAR FUNCIONAMIENTO DE BOTON */}
+                  <button>Cotizar</button>
                 </div>
               </>
             )}

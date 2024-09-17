@@ -149,7 +149,38 @@ app.delete("/deleteInventario/:id", (req, res) => {
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO" -----------------------------------------------
 
-// ... Contenido
+app.post('/cotizar', (req, res) => {
+    const { nombre_institucion, direccion_institucion, telefono_institucion, productos, total_final } = req.body;
+  
+    // Comenzamos creando un nuevo pedido en la tabla 'pedidos'
+    const pedidoQuery = `INSERT INTO pedidos (nombre_institucion, direccion_institucion, telefono_institucion, total_final) VALUES (?, ?, ?, ?)`;
+  
+    db.query(pedidoQuery, [nombre_institucion, direccion_institucion, telefono_institucion, total_final], (err, result) => {
+      if (err) {
+        console.error('Error al insertar el pedido:', err);
+        return res.status(500).json({ message: 'Error al crear el pedido' });
+      }
+  
+      const id_pedido = result.insertId; // Obtenemos el id del pedido recién insertado
+  
+      // Insertar cada producto en la tabla 'detalle_pedidos'
+      const detalleQuery = `INSERT INTO detalle_pedidos (id_pedido, id_producto, cantidad, precio_unitario, precio_total) VALUES (?, ?, ?, ?, ?)`;
+  
+      productos.forEach((producto) => {
+        const { id, price, cantidad } = producto;
+        const precio_total = price * cantidad;
+  
+        db.query(detalleQuery, [id_pedido, id, cantidad, price, precio_total], (err, result) => {
+          if (err) {
+            console.error('Error al insertar el detalle del pedido:', err);
+            return res.status(500).json({ message: 'Error al crear detalles del pedido' });
+          }
+        });
+      });
+  
+      res.status(200).json({ message: 'Pedido creado exitosamente' });
+    });
+  });
 
 // INDICACIÓN DE PUERTO A UTILIZAR
 app.listen(3001,()=>{

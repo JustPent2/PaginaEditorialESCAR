@@ -139,7 +139,7 @@ function ComCatalogo() {
 
   return (
     <div className="catalogo">
-            <div className="container mt-4">
+            <div className="card p-4 mb-4">
         <h2 className="mb-4">Información de la Institución</h2>
         <div className="row">
           <div className="col-md-6 mb-3">

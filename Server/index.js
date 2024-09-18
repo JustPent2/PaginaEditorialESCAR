@@ -147,7 +147,7 @@ app.delete("/deleteInventario/:id", (req, res) => {
     );
 });
 
-// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO" -----------------------------------------------
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO" PARA EL CATALOGO-----------------------------------------------
 
 app.post('/cotizar', (req, res) => {
     const { nombre_institucion, direccion_institucion, telefono_institucion, productos, total_final } = req.body;
@@ -181,6 +181,155 @@ app.post('/cotizar', (req, res) => {
       res.status(200).json({ message: 'Pedido creado exitosamente' });
     });
   });
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "PEDIDO" PARA INTERNO-----------------------------------------------
+
+// Ruta para obtener todos los pedidos
+app.get('/pedidos', (req, res) => {
+    const sqlQuery = 'SELECT * FROM pedidos';
+    db.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.log('Error al obtener pedidos:', err);
+        res.status(500).send('Error al obtener pedidos');
+      } else {
+        res.json(result);
+      }
+    });
+  });
+  
+  // Ruta para obtener los detalles de un pedido específico
+  app.get('/detalle_pedidos/:id_pedido', (req, res) => {
+    const id_pedido = req.params.id_pedido;
+    const sqlQuery = `SELECT dp.*, ip.titulo AS nombre_producto, (dp.cantidad * dp.precio_unitario) AS precio_total FROM detalle_pedidos dp JOIN inventario_productos ip ON dp.id_producto = ip.id WHERE dp.id_pedido = ?`;
+
+    db.query(sqlQuery, [id_pedido], (err, result) => {
+        if (err) {
+        console.log('Error al obtener detalles del pedido:', err);
+        res.status(500).send('Error al obtener detalles del pedido');
+        } else {
+        res.json(result);
+        }
+    });
+  });
+
+  // Ruta para cancelar un pedido
+app.delete('/cancelar_pedido/:id_pedido', (req, res) => {
+  const id_pedido = req.params.id_pedido;
+
+  // Primero eliminamos los detalles del pedido
+  const deleteDetailsQuery = 'DELETE FROM detalle_pedidos WHERE id_pedido = ?';
+  db.query(deleteDetailsQuery, [id_pedido], (err, result) => {
+    if (err) {
+      console.log('Error al eliminar detalles del pedido:', err);
+      res.status(500).send('Error al eliminar detalles del pedido');
+    } else {
+      // Después eliminamos el pedido
+      const deleteOrderQuery = 'DELETE FROM pedidos WHERE id_pedido = ?';
+      db.query(deleteOrderQuery, [id_pedido], (err, result) => {
+        if (err) {
+          console.log('Error al eliminar pedido:', err);
+          res.status(500).send('Error al eliminar pedido');
+        } else {
+          res.json({ message: 'Pedido cancelado correctamente' });
+        }
+      });
+    }
+  });
+});
+
+  // Ruta para procesar un pedido
+  app.post('/procesar_pedido/:id_pedido', (req, res) => {
+    const id_pedido = req.params.id_pedido;
+
+    // Consultamos el pedido y los detalles
+    const getOrderDetailsQuery = 'SELECT * FROM pedidos WHERE id_pedido = ?';
+    db.query(getOrderDetailsQuery, [id_pedido], (err, pedidoResult) => {
+        if (err) {
+            console.log('Error al obtener el pedido:', err);
+            return res.status(500).send('Error al obtener el pedido');
+        }
+
+        const pedido = pedidoResult[0];
+
+        // Insertamos el pedido en la tabla consignaciones
+        const insertConsignacionQuery = 'INSERT INTO consignaciones SET ?';
+        const consignacionData = {
+            nombre_institucion: pedido.nombre_institucion,
+            direccion_institucion: pedido.direccion_institucion,
+            telefono_institucion: pedido.telefono_institucion,
+            total_final: pedido.total_final
+        };
+        db.query(insertConsignacionQuery, consignacionData, (err, consignacionResult) => {
+            if (err) {
+                console.log('Error al insertar consignación:', err);
+                return res.status(500).send('Error al insertar consignación');
+            }
+
+            const id_consignacion = consignacionResult.insertId;
+
+            // Transferimos los productos a la tabla detalle_consignaciones
+            const getDetallePedidoQuery = 'SELECT * FROM detalle_pedidos WHERE id_pedido = ?';
+            db.query(getDetallePedidoQuery, [id_pedido], (err, detalles) => {
+                if (err) {
+                    console.log('Error al obtener detalles del pedido:', err);
+                    return res.status(500).send('Error al obtener detalles del pedido');
+                }
+
+                const insertDetalleConsignacionQuery = 'INSERT INTO detalle_consignaciones (id_consignacion, id_producto, cantidad, precio_unitario, precio_total) VALUES ?';
+                const detalleConsignacionData = detalles.map((detalle) => [
+                    id_consignacion,
+                    detalle.id_producto,
+                    detalle.cantidad,
+                    detalle.precio_unitario,
+                    detalle.precio_total
+                ]);
+
+                db.query(insertDetalleConsignacionQuery, [detalleConsignacionData], (err, result) => {
+                    if (err) {
+                        console.log('Error al insertar detalle consignación:', err);
+                        return res.status(500).send('Error al insertar detalle consignación');
+                    }
+
+                    // Eliminación del Registro en Pedidos
+                    const deleteDetailsQuery = 'DELETE FROM detalle_pedidos WHERE id_pedido = ?';
+                    db.query(deleteDetailsQuery, [id_pedido], (err, result) => {
+                        if (err) {
+                            console.log('Error al eliminar detalles del pedido:', err);
+                            return res.status(500).send('Error al eliminar detalles del pedido');
+                        }
+
+                        const deleteOrderQuery = 'DELETE FROM pedidos WHERE id_pedido = ?';
+                        db.query(deleteOrderQuery, [id_pedido], (err, result) => {
+                            if (err) {
+                                console.log('Error al eliminar pedido:', err);
+                                return res.status(500).send('Error al eliminar pedido');
+                            }
+
+                            // Respuesta final después de todas las operaciones
+                            res.json({ message: 'Pedido cancelado correctamente' });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "CONSIGNACIONES" PARA INTERNO-----------------------------------------------
+
+// ...
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "VENTAS" PARA INTERNO-----------------------------------------------
+
+// ...
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "REGISTROS" PARA INTERNO-----------------------------------------------
+
+// ...
+
+// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "BITACORA" PARA INTERNO-----------------------------------------------
+
+// ...
 
 // INDICACIÓN DE PUERTO A UTILIZAR
 app.listen(3001,()=>{

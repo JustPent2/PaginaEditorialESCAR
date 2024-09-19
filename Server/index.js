@@ -317,7 +317,153 @@ app.delete('/cancelar_pedido/:id_pedido', (req, res) => {
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "CONSIGNACIONES" PARA INTERNO-----------------------------------------------
 
-// ...
+
+// Ruta para obtener todas las consignaciones
+app.get('/consignaciones', (req, res) => {
+    const sqlQuery = 'SELECT * FROM consignaciones';
+    db.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.log('Error al obtener consignaciones:', err);
+        res.status(500).send('Error al obtener consignaciones');
+      } else {
+        res.json(result);
+      }
+    });
+});
+
+// Ruta para obtener los detalles de una consignación específica
+app.get('/detalle_consignaciones/:id_consignacion', (req, res) => {
+    const id_consignacion = req.params.id_consignacion;
+    const sqlQuery = `SELECT dc.*, ip.titulo AS nombre_producto, (dc.cantidad * dc.precio_unitario) AS precio_total FROM detalle_consignaciones dc JOIN inventario_productos ip ON dc.id_producto = ip.id WHERE dc.id_consignacion = ?`;
+
+    db.query(sqlQuery, [id_consignacion], (err, result) => {
+        if (err) {
+            console.log('Error al obtener detalles de la consignación:', err);
+            res.status(500).send('Error al obtener detalles de la consignación');
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+// Ruta para cancelar una consignación
+app.delete('/cancelar_consignacion/:id_consignacion', (req, res) => {
+    const id_consignacion = req.params.id_consignacion;
+
+    // Primero eliminamos los detalles de la consignación
+    const deleteDetailsQuery = 'DELETE FROM detalle_consignaciones WHERE id_consignacion = ?';
+    db.query(deleteDetailsQuery, [id_consignacion], (err, result) => {
+        if (err) {
+            console.log('Error al eliminar detalles de la consignación:', err);
+            res.status(500).send('Error al eliminar detalles de la consignación');
+        } else {
+            // Después eliminamos la consignación
+            const deleteConsignacionQuery = 'DELETE FROM consignaciones WHERE id_consignacion = ?';
+            db.query(deleteConsignacionQuery, [id_consignacion], (err, result) => {
+                if (err) {
+                    console.log('Error al eliminar consignación:', err);
+                    res.status(500).send('Error al eliminar consignación');
+                } else {
+                    res.json({ message: 'Consignación cancelada correctamente' });
+                }
+            });
+        }
+    });
+});
+
+// Ruta para procesar una venta a partir de una consignación
+app.post('/procesar_consignacion/:id_consignacion', (req, res) => {
+    const id_consignacion = req.params.id_consignacion;
+
+    // Consultamos la consignación y sus detalles
+    const getConsignacionDetailsQuery = 'SELECT * FROM consignaciones WHERE id_consignacion = ?';
+    db.query(getConsignacionDetailsQuery, [id_consignacion], (err, consignacionResult) => {
+        if (err) {
+            console.log('Error al obtener la consignación:', err);
+            return res.status(500).send('Error al obtener la consignación');
+        }
+
+        const consignacion = consignacionResult[0];
+
+        // Insertamos la consignación en la tabla ventas
+        const insertVentaQuery = 'INSERT INTO ventas SET ?';
+        const ventaData = {
+            nombre_institucion: consignacion.nombre_institucion,
+            direccion_institucion: consignacion.direccion_institucion,
+            telefono_institucion: consignacion.telefono_institucion,
+            total_final: consignacion.total_final,
+        };
+
+        db.query(insertVentaQuery, ventaData, (err, ventaResult) => {
+            if (err) {
+                console.log('Error al insertar venta:', err);
+                return res.status(500).send('Error al insertar venta');
+            }
+
+            const id_venta = ventaResult.insertId;
+
+            // Transferimos los productos a la tabla detalle_ventas
+            const getDetalleConsignacionQuery = 'SELECT * FROM detalle_consignaciones WHERE id_consignacion = ?';
+            db.query(getDetalleConsignacionQuery, [id_consignacion], (err, detalles) => {
+                if (err) {
+                    console.log('Error al obtener detalles de la consignación:', err);
+                    return res.status(500).send('Error al obtener detalles de la consignación');
+                }
+
+                const insertDetalleVentaQuery = 'INSERT INTO detalle_ventas (id_venta, id_producto, cantidad, precio_unitario, precio_total) VALUES ?';
+                const detalleVentaData = detalles.map((detalle) => [
+                    id_venta,
+                    detalle.id_producto,
+                    detalle.cantidad,
+                    detalle.precio_unitario,
+                    detalle.precio_total
+                ]);
+
+                db.query(insertDetalleVentaQuery, [detalleVentaData], (err, result) => {
+                    if (err) {
+                        console.log('Error al insertar detalle venta:', err);
+                        return res.status(500).send('Error al insertar detalle venta');
+                    }
+
+                    // Eliminamos la consignación después de transferir los datos
+                    const deleteDetailsQuery = 'DELETE FROM detalle_consignaciones WHERE id_consignacion = ?';
+                    db.query(deleteDetailsQuery, [id_consignacion], (err, result) => {
+                        if (err) {
+                            console.log('Error al eliminar detalles de la consignación:', err);
+                            return res.status(500).send('Error al eliminar detalles de la consignación');
+                        }
+
+                        const deleteConsignacionQuery = 'DELETE FROM consignaciones WHERE id_consignacion = ?';
+                        db.query(deleteConsignacionQuery, [id_consignacion], (err, result) => {
+                            if (err) {
+                                console.log('Error al eliminar consignación:', err);
+                                return res.status(500).send('Error al eliminar consignación');
+                            }
+
+                            // Respuesta final después de todas las operaciones
+                            res.json({ message: 'Consignación procesada y venta creada correctamente' });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+// Modificación de Fecha de Plazo de Consignación
+app.put('/modificar_plazo/:id_consignacion', (req, res) => {
+    const { nuevoPlazo } = req.body;
+    const sql = 'UPDATE consignaciones SET plazo_consignacion = ? WHERE id_consignacion = ?';
+    db.query(sql, [nuevoPlazo, req.params.id_consignacion], (err, result) => {
+      if (err) {
+        console.log('Error al modificar plazo:', err);
+        res.status(500).send('Error al modificar plazo');
+      } else {
+        res.json({ message: 'Plazo modificado correctamente' });
+      }
+    });
+  });
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "VENTAS" PARA INTERNO-----------------------------------------------
 

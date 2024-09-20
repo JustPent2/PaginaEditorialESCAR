@@ -485,13 +485,7 @@ app.get('/ventas', (req, res) => {
 // Ruta para obtener los detalles de una venta específica
 app.get('/detalle_ventas/:id_venta', (req, res) => {
     const id_venta = req.params.id_venta;
-    const sqlQuery = `
-        SELECT dv.*, ip.titulo AS nombre_producto, 
-               (dv.cantidad * dv.precio_unitario) AS precio_total 
-        FROM detalle_ventas dv 
-        JOIN inventario_productos ip 
-        ON dv.id_producto = ip.id 
-        WHERE dv.id_venta = ?`;
+    const sqlQuery = `SELECT dv.*, ip.titulo AS nombre_producto, (dv.cantidad * dv.precio_unitario) AS precio_total FROM detalle_ventas dv JOIN inventario_productos ip ON dv.id_producto = ip.id WHERE dv.id_venta = ?`;
 
     db.query(sqlQuery, [id_venta], (err, result) => {
         if (err) {
@@ -595,6 +589,16 @@ app.post('/procesar_venta/:id_venta', (req, res) => {
                         return res.status(500).send('Error al insertar detalle registro');
                     }
 
+                    // Actualizamos la cantidad en inventario_producto para cada producto
+                    detalles.forEach((detalle) => {
+                        const updateInventarioQuery = 'UPDATE inventario_productos SET cantidad_disponible = cantidad_disponible - ? WHERE id = ?';
+                        db.query(updateInventarioQuery, [detalle.cantidad, detalle.id_producto], (err, result) => {
+                            if (err) {
+                                console.log('Error al actualizar inventario:', err);
+                            }
+                        });
+                    });
+
                     // Eliminamos los detalles de la venta después de transferir los datos
                     const deleteDetailsQuery = 'DELETE FROM detalle_ventas WHERE id_venta = ?';
                     db.query(deleteDetailsQuery, [id_venta], (err, result) => {
@@ -621,9 +625,126 @@ app.post('/procesar_venta/:id_venta', (req, res) => {
     });
 });
 
+// Actualizar cantidades en detalle ventas
+app.put('/actualizar_detalle_venta/:id_detalle_venta', (req, res) => {
+    const { id_detalle_venta } = req.params;
+    const { cantidad } = req.body;
+  
+    // Validar la cantidad
+    if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
+      return res.status(400).send('La cantidad no es válida');
+    }
+  
+    // Obtener el precio_unitario del producto y el id_venta para actualizar el total_final
+    const getPrecioUnitarioQuery = `SELECT precio_unitario, id_venta FROM detalle_ventas WHERE id_detalle_venta = ?`;
+  
+    db.query(getPrecioUnitarioQuery, [id_detalle_venta], (err, result) => {
+      if (err) {
+        return res.status(500).send('Error al obtener el precio unitario');
+      }
+  
+      if (result.length === 0) {
+        return res.status(404).send('Detalle de venta no encontrado');
+      }
+  
+      const precio_unitario = result[0].precio_unitario;
+      const id_venta = result[0].id_venta;
+      const precio_total = cantidad * precio_unitario;
+  
+      // Actualizar la cantidad y el precio_total en la tabla detalle_ventas
+      const updateQuery = `UPDATE detalle_ventas SET cantidad = ?, precio_total = ? WHERE id_detalle_venta = ?`;
+  
+      db.query(updateQuery, [cantidad, precio_total, id_detalle_venta], (err, result) => {
+        if (err) {
+          return res.status(500).send('Error al actualizar el detalle de la venta');
+        }
+  
+        if (result.affectedRows === 0) {
+          return res.status(404).send('No se encontró el detalle de la venta para actualizar');
+        }
+  
+        // Calcular el nuevo total_final sumando los precios_totales de todos los productos de la venta
+        const getTotalFinalQuery = `SELECT SUM(precio_total) AS total_final FROM detalle_ventas WHERE id_venta = ?`;
+  
+        db.query(getTotalFinalQuery, [id_venta], (err, totalResult) => {
+          if (err) {
+            return res.status(500).send('Error al calcular el total final de la venta');
+          }
+  
+          const total_final = totalResult[0].total_final;
+  
+          // Actualizar el total_final en la tabla ventas
+          const updateTotalFinalQuery = `UPDATE ventas SET total_final = ? WHERE id_venta = ?`;
+  
+          db.query(updateTotalFinalQuery, [total_final, id_venta], (err, result) => {
+            if (err) {
+              return res.status(500).send('Error al actualizar el total final de la venta');
+            }
+  
+            res.send('Cantidad, precio total y total final de la venta actualizados correctamente');
+          });
+        });
+      });
+    });
+  });
+
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "REGISTROS" PARA INTERNO-----------------------------------------------
 
-// ...
+// Ruta para obtener todos los registros
+app.get('/verregistros', (req, res) => {
+    const sqlQuery = 'SELECT * FROM registro';
+    db.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.log('Error al obtener registros:', err);
+        res.status(500).send('Error al obtener registros');
+      } else {
+        res.json(result);
+      }
+    });
+  });
+  
+  // Ruta para obtener los detalles de un registro específico
+  app.get('/detalle_registro/:id_registro', (req, res) => {
+    const id_registro = req.params.id_registro;
+    const sqlQuery = `SELECT dr.*, ip.titulo AS nombre_producto, (dr.cantidad * dr.precio_unitario) AS precio_total 
+                      FROM detalle_registro dr 
+                      JOIN inventario_productos ip ON dr.id_producto = ip.id 
+                      WHERE dr.id_registro = ?`;
+  
+    db.query(sqlQuery, [id_registro], (err, result) => {
+      if (err) {
+        console.log('Error al obtener detalles del registro:', err);
+        res.status(500).send('Error al obtener detalles del registro');
+      } else {
+        res.json(result);
+      }
+    });
+  });
+  
+  // Ruta para cancelar un registro
+  app.delete('/cancelar_registro/:id_registro', (req, res) => {
+    const id_registro = req.params.id_registro;
+  
+    // Primero eliminamos los detalles del registro
+    const deleteDetailsQuery = 'DELETE FROM detalle_registro WHERE id_registro = ?';
+    db.query(deleteDetailsQuery, [id_registro], (err, result) => {
+      if (err) {
+        console.log('Error al eliminar detalles del registro:', err);
+        res.status(500).send('Error al eliminar detalles del registro');
+      } else {
+        // Después eliminamos el registro
+        const deleteRegistroQuery = 'DELETE FROM registro WHERE id_registro = ?';
+        db.query(deleteRegistroQuery, [id_registro], (err, result) => {
+          if (err) {
+            console.log('Error al eliminar registro:', err);
+            res.status(500).send('Error al eliminar registro');
+          } else {
+            res.json({ message: 'Registro cancelado correctamente' });
+          }
+        });
+      }
+    });
+  });
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "BITACORA" PARA INTERNO-----------------------------------------------
 

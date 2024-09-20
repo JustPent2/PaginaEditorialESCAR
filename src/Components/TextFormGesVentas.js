@@ -7,6 +7,7 @@ function TextFormGesVentas() {
   const [ventas, setVentas] = useState([]);
   const [ventaSeleccionada, setVentaSeleccionada] = useState(null);
   const [detalleProductos, setDetalleProductos] = useState([]);
+  const [totalFinal, setTotalFinal] = useState(0);
 
   // Cargar las ventas desde la base de datos
   useEffect(() => {
@@ -31,6 +32,7 @@ function TextFormGesVentas() {
     }).then((result) => {
       if (result.isConfirmed) {
         setVentaSeleccionada(venta);
+        setTotalFinal(venta.total_final); // Inicializa el total final
         // Obtener los detalles de la venta
         axios.get(`http://localhost:3001/detalle_ventas/${venta.id_venta}`)
           .then((response) => {
@@ -97,6 +99,55 @@ function TextFormGesVentas() {
     });
   };
 
+
+      // Función para editar la cantidad de un producto
+  const editarCantidad = (producto) => {
+    Swal.fire({
+      title: `Se cotizaron ${producto.cantidad} unidades de ${producto.nombre_producto}`,
+      input: 'number',
+      inputLabel: '¿Cuántas se venderán al final?',
+      inputValue: producto.cantidad,
+      showCancelButton: true,
+      inputAttributes: {
+        min: 1
+      },
+      confirmButtonText: 'Modificar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const nuevaCantidad = result.value;
+        if (nuevaCantidad && nuevaCantidad !== producto.cantidad) {
+          // Realizar la actualización en la base de datos
+          axios.put(`http://localhost:3001/actualizar_detalle_venta/${producto.id_detalle_venta}`, {
+            cantidad: nuevaCantidad
+          })
+          .then(() => {
+            // Actualizar el estado local para reflejar la nueva cantidad y recalcular el precio total
+            setDetalleProductos((prevDetalleProductos) => {
+              const nuevosDetalles = prevDetalleProductos.map((p) =>
+                p.id_detalle_venta === producto.id_detalle_venta
+                  ? { ...p, cantidad: nuevaCantidad, precio_total: nuevaCantidad * p.precio_unitario }
+                  : p
+              );
+
+              // Recalcular el total final después de actualizar la cantidad
+              const nuevoTotalFinal = nuevosDetalles.reduce((acc, prod) => acc + prod.precio_total, 0);
+              setTotalFinal(nuevoTotalFinal);  // Actualizar el total final
+
+              return nuevosDetalles;
+            });
+
+            Swal.fire('Actualizado', 'La cantidad ha sido modificada.', 'success');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar la cantidad:', error);
+            Swal.fire('Error', 'Hubo un error al actualizar la cantidad.', 'error');
+          });
+        }
+      }
+    });
+  };
+
   return (
     <div className="container mt-5">
       {/* Tabla de ventas */}
@@ -146,8 +197,7 @@ function TextFormGesVentas() {
                 <td>
                   <button
                     className="btn btn-primary"
-                    onClick={() => gestionarVenta(venta)}
-                  >
+                    onClick={() => gestionarVenta(venta)}>
                     Gestionar
                   </button>
                 </td>
@@ -208,7 +258,8 @@ function TextFormGesVentas() {
                   <input
                     type="text"
                     className="form-control"
-                    value={`Q.${ventaSeleccionada.total_final}`}
+                    value={`Q.${totalFinal.toFixed(2)}`}  // Mostrando el total final
+                    onChange={(e) => setTotalFinal(parseFloat(e.target.value.replace('Q.', '').replace(',', '')))} // Actualizando el estado al modificar
                     readOnly />
                 </div>
               </div>
@@ -239,9 +290,40 @@ function TextFormGesVentas() {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Botones de acción */}
-            <div className="col-12 text-center mt-3">
+          {/* Tabla de productos */}
+          <table className="table table-striped mt-4">
+            <thead>
+              <tr>
+                <th>Nombre Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {detalleProductos.map((producto) => (
+                <tr key={producto.id_detalle_registro}>
+                  <td>{producto.nombre_producto}</td>
+                  <td>{producto.cantidad}</td>
+                  <td>Q.{producto.precio_unitario}</td>
+                  <td>Q.{producto.precio_total}</td>
+                  <td>
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => editarCantidad(producto)}>
+                      Editar Cantidad
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Botones de acción */}
+          <div className="col-12 text-center mt-3">
               <button
                 className="btn btn-success mx-2"
                 onClick={() => procesarVenta(ventaSeleccionada.id_venta)}>
@@ -253,29 +335,6 @@ function TextFormGesVentas() {
                 Cancelar Venta
               </button>
             </div>
-          </div>
-
-          {/* Tabla de productos */}
-          <table className="table table-striped mt-4">
-            <thead>
-              <tr>
-                <th>Nombre Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Precio Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detalleProductos.map((producto) => (
-                <tr key={producto.id_detalle_registro}>
-                  <td>{producto.nombre_producto}</td>
-                  <td>{producto.cantidad}</td>
-                  <td>Q.{producto.precio_unitario}</td>
-                  <td>Q.{producto.precio_total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       )}
     </div>

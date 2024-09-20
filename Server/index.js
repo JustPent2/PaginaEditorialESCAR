@@ -392,6 +392,8 @@ app.post('/procesar_consignacion/:id_consignacion', (req, res) => {
             direccion_institucion: consignacion.direccion_institucion,
             telefono_institucion: consignacion.telefono_institucion,
             total_final: consignacion.total_final,
+            fecha_consignacion: consignacion.fecha_consignacion,
+            plazo_consignacion: consignacion.plazo_consignacion 
         };
 
         db.query(insertVentaQuery, ventaData, (err, ventaResult) => {
@@ -467,7 +469,157 @@ app.put('/modificar_plazo/:id_consignacion', (req, res) => {
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "VENTAS" PARA INTERNO-----------------------------------------------
 
-// ...
+// Ruta para obtener todas las ventas
+app.get('/ventas', (req, res) => {
+    const sqlQuery = 'SELECT * FROM ventas';
+    db.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.log('Error al obtener ventas:', err);
+            res.status(500).send('Error al obtener ventas');
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+// Ruta para obtener los detalles de una venta específica
+app.get('/detalle_ventas/:id_venta', (req, res) => {
+    const id_venta = req.params.id_venta;
+    const sqlQuery = `
+        SELECT dv.*, ip.titulo AS nombre_producto, 
+               (dv.cantidad * dv.precio_unitario) AS precio_total 
+        FROM detalle_ventas dv 
+        JOIN inventario_productos ip 
+        ON dv.id_producto = ip.id 
+        WHERE dv.id_venta = ?`;
+
+    db.query(sqlQuery, [id_venta], (err, result) => {
+        if (err) {
+            console.log('Error al obtener detalles de la venta:', err);
+            res.status(500).send('Error al obtener detalles de la venta');
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+// Ruta para cancelar una venta
+app.delete('/cancelar_venta/:id_venta', (req, res) => {
+    const id_venta = req.params.id_venta;
+
+    // Primero eliminamos los detalles de la venta
+    const deleteDetailsQuery = 'DELETE FROM detalle_ventas WHERE id_venta = ?';
+    db.query(deleteDetailsQuery, [id_venta], (err, result) => {
+        if (err) {
+            console.log('Error al eliminar detalles de la venta:', err);
+            res.status(500).send('Error al eliminar detalles de la venta');
+        } else {
+            // Después eliminamos la venta
+            const deleteVentaQuery = 'DELETE FROM ventas WHERE id_venta = ?';
+            db.query(deleteVentaQuery, [id_venta], (err, result) => {
+                if (err) {
+                    console.log('Error al eliminar venta:', err);
+                    res.status(500).send('Error al eliminar venta');
+                } else {
+                    res.json({ message: 'Venta cancelada correctamente' });
+                }
+            });
+        }
+    });
+});
+
+// Ruta para procesar una venta a partir de una consignación
+app.post('/procesar_venta/:id_venta', (req, res) => {
+    const id_venta = req.params.id_venta;
+
+    // Consultamos la venta y sus detalles
+    const getVentaDetailsQuery = 'SELECT * FROM ventas WHERE id_venta = ?';
+    db.query(getVentaDetailsQuery, [id_venta], (err, ventaResult) => {
+        if (err) {
+            console.log('Error al obtener la venta:', err);
+            return res.status(500).send('Error al obtener la venta');
+        }
+
+        const venta = ventaResult[0];
+
+        // Asegúrate de que la venta existe
+        if (!venta) {
+            return res.status(404).send('Venta no encontrada');
+        }
+
+        // Insertamos la venta en la tabla de registros con los campos adecuados
+        const insertRegistroQuery = `INSERT INTO registro SET ?`;
+        const registroData = {
+            nombre_institucion: venta.nombre_institucion,
+            direccion_institucion: venta.direccion_institucion,
+            telefono_institucion: venta.telefono_institucion,
+            total_final: venta.total_final,
+            fecha_consignacion: venta.fecha_consignacion, // Nueva columna
+            plazo_consignacion: venta.plazo_consignacion, // Nueva columna
+            fecha_venta: venta.fecha_venta, // Nueva columna
+            fecha_venta_final: new Date()  // fecha_venta_final actual
+        };
+
+        db.query(insertRegistroQuery, registroData, (err, registroResult) => {
+            if (err) {
+                console.log('Error al insertar registro:', err);
+                return res.status(500).send('Error al insertar registro');
+            }
+
+            const id_registro = registroResult.insertId;
+
+            // Transferimos los productos a la tabla detalle_registro
+            const getDetalleVentaQuery = 'SELECT * FROM detalle_ventas WHERE id_venta = ?';
+            db.query(getDetalleVentaQuery, [id_venta], (err, detalles) => {
+                if (err) {
+                    console.log('Error al obtener detalles de la venta:', err);
+                    return res.status(500).send('Error al obtener detalles de la venta');
+                }
+
+                if (detalles.length === 0) {
+                    return res.status(404).send('No se encontraron detalles de la venta');
+                }
+
+                const insertDetalleRegistroQuery = 'INSERT INTO detalle_registro (id_registro, id_producto, cantidad, precio_unitario, precio_total) VALUES ?';
+                const detalleRegistroData = detalles.map((detalle) => [
+                    id_registro,
+                    detalle.id_producto,
+                    detalle.cantidad,
+                    detalle.precio_unitario,
+                    detalle.precio_total
+                ]);
+
+                db.query(insertDetalleRegistroQuery, [detalleRegistroData], (err, result) => {
+                    if (err) {
+                        console.log('Error al insertar detalle registro:', err);
+                        return res.status(500).send('Error al insertar detalle registro');
+                    }
+
+                    // Eliminamos los detalles de la venta después de transferir los datos
+                    const deleteDetailsQuery = 'DELETE FROM detalle_ventas WHERE id_venta = ?';
+                    db.query(deleteDetailsQuery, [id_venta], (err, result) => {
+                        if (err) {
+                            console.log('Error al eliminar detalles de la venta:', err);
+                            return res.status(500).send('Error al eliminar detalles de la venta');
+                        }
+
+                        // Eliminamos la venta después de transferir los datos
+                        const deleteVentaQuery = 'DELETE FROM ventas WHERE id_venta = ?';
+                        db.query(deleteVentaQuery, [id_venta], (err, result) => {
+                            if (err) {
+                                console.log('Error al eliminar venta:', err);
+                                return res.status(500).send('Error al eliminar venta');
+                            }
+
+                            // Respuesta final después de todas las operaciones
+                            res.json({ message: 'Venta procesada y registro creado correctamente' });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "REGISTROS" PARA INTERNO-----------------------------------------------
 

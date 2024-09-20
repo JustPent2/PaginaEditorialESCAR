@@ -11,7 +11,6 @@ function Inventario() {
   return (
     <main className="inicio">
       <HeaderAdmin />
-      <h1>Inventario</h1>
       <TextAreaInventario />
     </main>
   );

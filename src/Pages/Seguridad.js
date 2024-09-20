@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 // Componentes a Utilizar
 import HeaderAdmin from '../Components/HeaderAdmin';
 import TextAreaSeguridad from '../Components/TextFormSeguridad';
-import DataTable from '../Components/DataTable';
-import SearchBar from '../Components/SearchBar';
 // Estilos a Utilizar
 import '../Styles/Seguridad.css';
 import '../Styles/Inicio.css';
@@ -46,8 +44,6 @@ function Seguridad() {
             {activeTab === 'Bitacora' && (
               <div>
                 <h2>Bitácora</h2>
-                <SearchBar />
-                <DataTable/>
               </div>
             )}
           </div>

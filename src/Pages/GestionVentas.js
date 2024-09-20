@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import HeaderAdmin from '../Components/HeaderAdmin';
 import GesPedidos from '../Components/TextFormGesPedidos';
 import GesConsignaciones from '../Components/TextFormGesConsignaciones';
+import GesVentas from '../Components/TextFormGesVentas';
 // Estilos a Utilizar
 import '../Styles/GestionVentas.css';
 import '../Styles/Inicio.css';
@@ -60,6 +61,7 @@ function GestionVentas() {
             <div>
               <h2>Gestión de Ventas</h2>
               <p>Contenido relacionado con la ventas.</p>
+              <GesVentas/>
             </div>
           )}
         </div>

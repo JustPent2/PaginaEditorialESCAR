@@ -1,29 +1,36 @@
-.post{
+.post {
     display: flex;
-    border: 1px solid #ccc;
+    border: 1px solid #CDA394; /* Color de borde actualizado */
     padding: 10px;
     margin: 20px;
-    background-color: #fff;
+    background-color: #F6EBD6; /* Fondo claro */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     width: 100%;
 }
 
-.postHeader{
+.postHeader {
     display: flex;
     margin-bottom: 10px;
     text-align: justify;
+    color: #7D1628; /* Color de texto oscuro */
 }
 
-.perfil{
+.perfil {
     font-size: 12px;
+    color: #9B3A44; /* Color para los detalles de perfil */
 }
 
-.postContenido{
+.postContenido {
     margin: 20px;
     margin-left: 100px;
     font-size: 14px;
     line-height: 1.4;
     text-align: justify;
     max-width: 600px;
+    color: #7D1628; /* Texto principal en color oscuro */
+    background-color: #F7F0E9; /* Fondo más claro para el contenido */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #CDA394; /* Borde alrededor del contenido */
 }

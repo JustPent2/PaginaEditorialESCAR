@@ -84,6 +84,7 @@ function TextFormRegistros() {
 
   return (
     <div className="container mt-5">
+      <h1 className="text-center mb-4">Registros</h1>
       {/* Tabla de registros */}
       <table className="table table-striped">
         <thead>

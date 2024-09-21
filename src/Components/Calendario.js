@@ -1,7 +1,8 @@
-// Calendario.js
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+// Estilos a utilizar
+import '../Styles/Calendario.css';
 
 function Calendario() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -11,8 +12,7 @@ function Calendario() {
       <DatePicker
         selected={selectedDate}
         onChange={(date) => setSelectedDate(date)}
-        inline
-      />
+        inline/>
     </div>
   );
 }

@@ -11,7 +11,6 @@ function Registros() {
   return (
     <main className="inicio">
       <HeaderAdmin />
-      <h1>Registros</h1>
       <VerRegistros/>
     </main>
   );

@@ -149,9 +149,6 @@ function TextFormSeguridad() {
         }
       </div>
         <div className="card text-center">
-      <div className="card-header">
-        Gestión de Usuarios
-      </div>
       <div className="card-body">
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Nombre:</span>

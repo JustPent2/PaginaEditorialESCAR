@@ -223,16 +223,18 @@ const TextFormInventario = () => {
               <td>{registro.cantidad_disponible}</td>
               <td>{registro.estado}</td>
               <td>
-                <button
-                  className="btn btn-primary btn-sm me-2"
-                  onClick={() => seleccionarRegistro(registro)}>
-                  Editar
-                </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => eliminarRegistro(registro.id)}>
-                  Eliminar
-                </button>
+              <div className="btn-group" role="group" aria-label="Basic example">
+                  <button
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => seleccionarRegistro(registro)}>
+                    Editar
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => eliminarRegistro(registro.id)}>
+                    Eliminar
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

@@ -140,37 +140,37 @@ function ComCatalogo() {
   return (
     <div className="catalogo">
             <div className="card p-4 mb-4">
-        <h2 className="mb-4">Información de la Institución</h2>
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label htmlFor="nombreInstitucion" className="form-label">Nombre de la Institución:</label>
-            <input
-              type="text"
-              id="nombreInstitucion"
-              className="form-control"
-              value={nombreInstitucion}
-              onChange={(e) => setNombreInstitucion(e.target.value)}/>
-          </div>
-          <div className="col-md-6 mb-3">
-            <label htmlFor="direccionInstitucion" className="form-label">Dirección de la Institución:</label>
-            <input
-              type="text"
-              id="direccionInstitucion"
-              className="form-control"
-              value={direccionInstitucion}
-              onChange={(e) => setDireccionInstitucion(e.target.value)}/>
-          </div>
-          <div className="col-md-6 mb-3">
-            <label htmlFor="telefonoInstitucion" className="form-label">Teléfono de la Institución:</label>
-            <input
-              type="text"
-              id="telefonoInstitucion"
-              className="form-control"
-              value={telefonoInstitucion}
-              onChange={(e) => setTelefonoInstitucion(e.target.value)}/>
-          </div>
-        </div>
-      </div>
+              <h2 className="mb-4">Información de la Institución</h2>
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="nombreInstitucion" className="form-label">Nombre de la Institución:</label>
+                  <input
+                    type="text"
+                    id="nombreInstitucion"
+                    className="form-control"
+                    value={nombreInstitucion}
+                    onChange={(e) => setNombreInstitucion(e.target.value)}/>
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="direccionInstitucion" className="form-label">Dirección de la Institución:</label>
+                  <input
+                    type="text"
+                    id="direccionInstitucion"
+                    className="form-control"
+                    value={direccionInstitucion}
+                    onChange={(e) => setDireccionInstitucion(e.target.value)}/>
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="telefonoInstitucion" className="form-label">Teléfono de la Institución:</label>
+                  <input
+                    type="text"
+                    id="telefonoInstitucion"
+                    className="form-control"
+                    value={telefonoInstitucion}
+                    onChange={(e) => setTelefonoInstitucion(e.target.value)}/>
+                </div>
+              </div>
+            </div>
 
       <header>
         <h1>Catálogo</h1>

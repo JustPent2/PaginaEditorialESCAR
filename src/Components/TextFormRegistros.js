@@ -200,7 +200,7 @@ function TextFormRegistros() {
             {/* Botones de acción */}
             <div className="d-flex justify-content-center mt-4">
                 <button className="btn btn-danger mx-2" onClick={eliminarRegistro}>
-                    Cancelar Pedido
+                    Eliminar Registro
                 </button>
             </div>
         </div>

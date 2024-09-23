@@ -43,34 +43,41 @@ function TextFormSeguridad() {
         footer: JSON.parse(JSON.stringify(error)).message
       });
     });
-  }
+  };
 
-  const update = ()=>{
-    Axios.put("http://localhost:3001/update",{
-      id:id,
-      nombre:nombre,
-      contrasenia:contrasenia,
-      correo:correo,
-      numero:numero,
-      rol:rol
-    }).then(()=>{
-      getRegistros();
-      limpiar();
-      Swal.fire({
-        title: "<strong>Registro Modificado</strong>",
-        text: "El Registro se modifico correctamente",
-        icon: 'success',
-        confirmButtonText: 'Continuar'
-      })
-    }).catch(function(error){
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "No se logro modificar el registro",
-        footer: JSON.parse(JSON.stringify(error)).message
-      });
+  const update = () => {
+    const data = {
+        id: id,
+        nombre: nombre,
+        correo: correo,
+        numero: numero,
+        rol: rol
+    };
+
+    // Solo actualizar la contraseña si el usuario ingresó una nueva
+    if (contrasenia) {
+        data.contrasenia = contrasenia;
+    }
+
+    Axios.put("http://localhost:3001/update", data)
+    .then(() => {
+        getRegistros();
+        limpiar();
+        Swal.fire({
+            title: "<strong>Registro Modificado</strong>",
+            text: "El Registro se modificó correctamente",
+            icon: 'success',
+            confirmButtonText: 'Continuar'
+        });
+    }).catch(function(error) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "No se logró modificar el registro",
+            footer: JSON.parse(JSON.stringify(error)).message
+        });
     });
-  }
+  };
 
   const deleteRegistro = (val)=>{
 
@@ -104,7 +111,7 @@ function TextFormSeguridad() {
         footer: JSON.parse(JSON.stringify(error)).message
       });
     });
-  }
+  };
 
   const limpiar = ()=>{
     setNombre("");
@@ -114,25 +121,25 @@ function TextFormSeguridad() {
     setRol("");
     setId("");
     setEditar(false);
-  }
+  };
 
   const editarRegistro = (val)=>{
     console.log("Registro seleccionado para editar:", val);
     setEditar(true);
 
     setNombre(val.nombre_usuario);
-    setContrasenia(val.contraseña);
+    setContrasenia(""); // No mostrar la contraseña
     setCorreo(val.correo_electronico);
     setNumero(val.numero_telefono);
     setRol(val.rol);
     setId(val.id_usuario);
-  }
+  };
 
   const getRegistros = ()=>{
     Axios.get("http://localhost:3001/registros").then((response)=>{
       setRegistros(response.data);
     });
-  }
+  };
 
   useEffect(() => {
     getRegistros();
@@ -140,7 +147,8 @@ function TextFormSeguridad() {
 
 
   return (
-    <div className="container">
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Gestión de Usuarios</h1>
       <div className=''>
         {
           registrosList.map((val,key)=>{
@@ -212,7 +220,6 @@ function TextFormSeguridad() {
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Nombre</th>
-                  <th scope="col">Contraseña</th>
                   <th scope="col">Correo Electrónico</th>
                   <th scope="col">Número de Teléfono</th>
                   <th scope="col">Rol</th>
@@ -225,7 +232,6 @@ function TextFormSeguridad() {
               return <tr key={val.id_usuario}>
                         <th scope="row">{val.id_usuario}</th>
                         <td>{val.nombre_usuario}</td>
-                        <td>{val.contraseña}</td>
                         <td>{val.correo_electronico}</td>
                         <td>{val.numero_telefono}</td>
                         <td>{val.rol}</td>

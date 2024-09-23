@@ -45,32 +45,47 @@ function TextFormGesVentas() {
     });
   };
 
-  // Función para procesar la venta y moverla a registros
-  const procesarVenta = (idVenta) => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Deseas procesar esta venta y convertirla en un registro?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, procesar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.post(`http://localhost:3001/procesar_venta/${idVenta}`)
-          .then(() => {
-            Swal.fire('Procesada', 'La venta ha sido procesada como registro.', 'success');
-            // Actualizar la lista de ventas
-            setVentas(ventas.filter(venta => venta.id_venta !== idVenta));
-            // Cerrar la sección de detalles
-            setVentaSeleccionada(null);
-          })
-          .catch((error) => {
-            console.error('Error al procesar la venta:', error);
-            Swal.fire('Error', 'Hubo un error al procesar la venta.', 'error');
-          });
-      }
-    });
-  };
+// Función para procesar la venta y aplicar el descuento si corresponde
+const procesarVenta = (idVenta) => {
+  // Calcular la cantidad total de productos vendidos
+  let cantidadTotal = detalleProductos.reduce((acc, producto) => acc + producto.cantidad, 0);
+
+  // Aplicar descuentos según la cantidad total de productos
+  let descuento = 0;
+  if (cantidadTotal >= 10 && cantidadTotal <= 20) {
+    descuento = 0.10; // 10% de descuento
+  } else if (cantidadTotal > 20) {
+    descuento = 0.20; // 20% de descuento
+  }
+
+  // Calcular el nuevo total con el descuento aplicado
+  const nuevoTotalFinal = totalFinal * (1 - descuento);
+
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: `¿Deseas procesar esta venta? Se aplicará un descuento del ${(descuento * 100).toFixed(0)}%`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, procesar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Aquí se procesaría la venta con el nuevo total final
+      axios.post(`http://localhost:3001/procesar_venta/${idVenta}`, { total_final: nuevoTotalFinal })
+        .then(() => {
+          Swal.fire('Procesada', 'La venta ha sido procesada con el descuento aplicado.', 'success');
+          // Actualizar la lista de ventas
+          setVentas(ventas.filter(venta => venta.id_venta !== idVenta));
+          // Cerrar la sección de detalles
+          setVentaSeleccionada(null);
+        })
+        .catch((error) => {
+          console.error('Error al procesar la venta:', error);
+          Swal.fire('Error', 'Hubo un error al procesar la venta.', 'error');
+        });
+    }
+  });
+};
 
   // Función para cancelar la venta
   const cancelarVenta = (idVenta) => {

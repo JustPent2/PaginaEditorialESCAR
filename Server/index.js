@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 app.use(cors());
 app.use(express.json());
@@ -15,37 +17,44 @@ const db = mysql.createConnection({
 });
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "USUARIOS" -----------------------------------------------
-app.post("/create", (req,res)=>{
-    const nombre = req.body.nombre;
-    const contrasenia = req.body.contrasenia;
-    const correo = req.body.correo;
-    const numero = req.body.numero;
-    const rol = req.body.rol;
+// Crear un nuevo usuario con contraseña encriptada
+app.post("/create", (req, res) => {
+    const { nombre, contrasenia, correo, numero, rol } = req.body;
 
-    db.query('INSERT INTO usuarios(nombre_usuario,contraseña,correo_electronico,numero_telefono,rol) VALUES(?,?,?,?,?)',[nombre,contrasenia,correo,numero,rol],
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send(result);
-            }
+    // Encriptar la contraseña antes de guardarla
+    bcrypt.hash(contrasenia, saltRounds, (err, hash) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Error al encriptar la contraseña');
+        } else {
+            db.query(
+                'INSERT INTO usuarios(nombre_usuario, contraseña, correo_electronico, numero_telefono, rol) VALUES(?,?,?,?,?)',
+                [nombre, hash, correo, numero, rol],
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.send(result);
+                    }
+                }
+            );
         }
-    );
+    });
 });
 
-app.get("/registros", (req,res)=>{
-    db.query('SELECT * FROM usuarios',
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send(result);
-            }
+// Obtener registros de usuarios
+app.get("/registros", (req, res) => {
+    db.query('SELECT * FROM usuarios', (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
         }
-    );
+    });
 });
 
-app.put("/update", (req,res)=>{
+// Actualizar un usuario con nueva contraseña encriptada
+app.put("/update", (req, res) => {
     const id = req.body.id;
     const nombre = req.body.nombre;
     const contrasenia = req.body.contrasenia;
@@ -53,29 +62,65 @@ app.put("/update", (req,res)=>{
     const numero = req.body.numero;
     const rol = req.body.rol;
 
-    db.query('UPDATE usuarios SET nombre_usuario=?,contraseña=?,correo_electronico=?,numero_telefono=?,rol=? WHERE id_usuario=?',[nombre,contrasenia,correo,numero,rol,id],
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send(result);
-            }
+    // Crear la consulta base
+    let query = 'UPDATE usuarios SET nombre_usuario=?, correo_electronico=?, numero_telefono=?, rol=? WHERE id_usuario=?';
+    let values = [nombre, correo, numero, rol, id];
+
+    // Si la contraseña fue enviada, actualizarla
+    if (contrasenia) {
+        query = 'UPDATE usuarios SET nombre_usuario=?, contraseña=?, correo_electronico=?, numero_telefono=?, rol=? WHERE id_usuario=?';
+        const hashedPassword = bcrypt.hashSync(contrasenia, 10); // Encriptar la nueva contraseña
+        values = [nombre, hashedPassword, correo, numero, rol, id];
+    }
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
         }
-    );
+    });
 });
 
-app.delete("/delete/:id", (req,res)=>{
+// Eliminar un usuario
+app.delete("/delete/:id", (req, res) => {
     const id = req.params.id;
 
-    db.query('DELETE FROM usuarios WHERE id_usuario=?',id,
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send(result);
-            }
+    db.query('DELETE FROM usuarios WHERE id_usuario=?', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
         }
-    );
+    });
+});
+
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+
+    db.query("SELECT * FROM usuarios WHERE nombre_usuario = ?", [username], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: "Error en el servidor" });
+        }
+        
+        if (result.length === 0) {
+            return res.status(200).json({ authenticated: false, message: "Usuario o Contraseña incorrecta" });
+        }
+
+        const usuario = result[0];
+
+        bcrypt.compare(password, usuario.contraseña, (err, isMatch) => {
+            if (err) {
+                return res.status(500).json({ error: "Error al comparar la contraseña" });
+            }
+
+            if (isMatch) {
+                return res.status(200).json({ authenticated: true, message: "Inicio de sesión exitoso" });
+            } else {
+                return res.status(200).json({ authenticated: false, message: "Usuario o Contraseña incorrecta" });
+            }
+        });
+    });
 });
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "INVENTARIO" -----------------------------------------------
@@ -525,6 +570,7 @@ app.delete('/cancelar_venta/:id_venta', (req, res) => {
 // Ruta para procesar una venta a partir de una consignación
 app.post('/procesar_venta/:id_venta', (req, res) => {
     const id_venta = req.params.id_venta;
+    const nuevoTotalFinal = req.body.total_final; // El nuevo total con descuento recibido desde el frontend
 
     // Consultamos la venta y sus detalles
     const getVentaDetailsQuery = 'SELECT * FROM ventas WHERE id_venta = ?';
@@ -547,7 +593,7 @@ app.post('/procesar_venta/:id_venta', (req, res) => {
             nombre_institucion: venta.nombre_institucion,
             direccion_institucion: venta.direccion_institucion,
             telefono_institucion: venta.telefono_institucion,
-            total_final: venta.total_final,
+            total_final: nuevoTotalFinal, // Usamos el nuevo total calculado
             fecha_consignacion: venta.fecha_consignacion, // Nueva columna
             plazo_consignacion: venta.plazo_consignacion, // Nueva columna
             fecha_venta: venta.fecha_venta, // Nueva columna
@@ -616,7 +662,7 @@ app.post('/procesar_venta/:id_venta', (req, res) => {
                             }
 
                             // Respuesta final después de todas las operaciones
-                            res.json({ message: 'Venta procesada y registro creado correctamente' });
+                            res.json({ message: 'Venta procesada y registro creado correctamente con el nuevo total final' });
                         });
                     });
                 });
@@ -745,10 +791,6 @@ app.get('/verregistros', (req, res) => {
       }
     });
   });
-
-// OPERACIONES DE BASE DE DATOS CON LA TABLA DE "BITACORA" PARA INTERNO-----------------------------------------------
-
-// ...
 
 // INDICACIÓN DE PUERTO A UTILIZAR
 app.listen(3001,()=>{

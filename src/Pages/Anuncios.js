@@ -6,7 +6,8 @@ import Post from '../Components/Post';
 // Estilos a Utilizar
 import '../Styles/Inicio.css';
 // Imagenes a Utilizar
-import ImagenDefault from '../Images/FaltaImagen.png';
+//import ImagenDefault from '../Images/FaltaImagen.png';
+import Logo from '../Images/logo-escar-recort.png';
 
 function Inicio() {
   return (
@@ -20,24 +21,15 @@ function Inicio() {
         <h2>Anuncios</h2>
           {/* Post 1 */}
           <Post 
-            titulo="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in volutpat est. 
-                Nam placerat eleifend tellus. Mauris semper, nulla eu ultrices suscipit, mauris orci 
-                sagittis elit, ac commodo dolor lacus eget libero. Fusce tincidunt, urna et rutrum bibendum, 
-                lacus arcu rutrum arcu, nec viverra nulla orci eu sem. Sed eget nisi felis. Donec id faucibus lorem. "
+            titulo="¡Bienvenido al sistema de gestión de ventas e inventario de la editorial ESCAR! Esta es una
+            versión preliminar de la aplicación, por lo que los errores o mejoras son de esperarse, de parte del equipo de
+            desarrollo te alentamos a comentar tus mejoras para nuestra retroalimentación. Esperamos que este sistema sea de tu
+            ayuda."
             descripcion="Mensaje Administrativo"
-            imagen1={ImagenDefault}
+            imagen1={Logo}
             nombre="ESCAR"
           />
-          {/* Post 2 */}
-          <Post 
-            titulo="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in volutpat est. 
-                Nam placerat eleifend tellus. Mauris semper, nulla eu ultrices suscipit, mauris orci 
-                sagittis elit, ac commodo dolor lacus eget libero. Fusce tincidunt, urna et rutrum bibendum, 
-                lacus arcu rutrum arcu, nec viverra nulla orci eu sem. Sed eget nisi felis. Donec id faucibus lorem. "
-            descripcion="Mensaje Administrativo"
-            imagen1={ImagenDefault}
-            nombre="ESCAR"
-          />
+          {/* Espacio para nuevos post */}
         </div>
       </section>
     </main>

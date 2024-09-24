@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Axios from 'axios';
-import '../Styles/InicioSesion.css';
-import ImagenDefault from '../Images/FaltaImagen.png';
 import Swal from 'sweetalert2';
+// Estilos a Utilizar
+import '../Styles/InicioSesion.css';
+// Imagenes a Utilizar
+//import ImagenDefault from '../Images/FaltaImagen.png';
+import Logo from '../Images/logo-escar-recort.png';
 
 function InicioSesion() {
   const [username, setUsername] = useState('');
@@ -48,7 +51,7 @@ function InicioSesion() {
   return (
     <div className="login-container">
       <header className="login-header">
-        <img src={ImagenDefault} alt="Logo Editorial ESCAR" className="logo" />
+        <img src={Logo} alt="Logo Editorial ESCAR" className="logo" />
         <h1>Editorial ESCAR
         <h2>Gestión y Administración</h2></h1>
       </header>

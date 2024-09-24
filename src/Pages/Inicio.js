@@ -5,13 +5,14 @@ import Header from '../Components/Header';
 import '../Styles/Inicio.css';
 // Imagenes a Utilizar
 import ImagenDefault from '../Images/FaltaImagen.png';
+import LibroGen1 from '../Images/LibroGen1.jpg';
 
 function Inicio() {
   return (
     <main className="inicio">
       <Header />
       <section className="intro">
-        <img src={ImagenDefault} alt="Portada" className="intro-image" />
+        <img src={LibroGen1} alt="Portada" className="intro-image" />
         <div className="intro-text">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in volutpat est. 
             Nam placerat eleifend tellus. Mauris semper, nulla eu ultrices suscipit, mauris orci 

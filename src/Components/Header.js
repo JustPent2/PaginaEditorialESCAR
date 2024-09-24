@@ -2,13 +2,14 @@ import React from 'react';
 // Estilos a Utilizar
 import '../Styles/Header.css';
 // Imagenes a Utilizar
-import ImagenDefault from '../Images/FaltaImagen.png';
+//import ImagenDefault from '../Images/FaltaImagen.png';
+import Logo from '../Images/logo-escar-recort.png';
 
 function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <img src={ImagenDefault} alt="Editorial ESCAR" />
+        <img src={Logo} alt="Editorial ESCAR" />
         <h1>Editorial ESCAR</h1>
       </div>
       <nav className="nav-menu">

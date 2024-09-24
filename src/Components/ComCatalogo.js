@@ -5,70 +5,78 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Estilos a Utilizar
 import '../Styles/Catalogo.css';
 // Imagenes a Utilizar
+// ICONOS
 import CartIcon from '../Images/FaltaImagen.png';
 import CloseIcon from '../Images/FaltaImagen.png';
-import ImagenDefault from '../Images/FaltaImagen.png';
+// IMAGENES
+//import ImagenDefault from '../Images/FaltaImagen.png';
+import DigitacionModerna from '../Images/DigitacionModerna.png';
+import TemVelocidadMec from '../Images/TemVelocidadMecanografica.png';
+import PracticadeOficina1 from '../Images/PracticadeOficina1.png';
+import PracticadeOficina2 from '../Images/PracticadeOficina2.png';
+import AnalisisOrtModerna from '../Images/AnalisisOrtografiaModerna.png';
+import EscrituraDefault from '../Images/EscrituraDefecto.jpg';
 
 const productsData = [
   {
     id: 1,
     name: 'Digitación Moderna',
     price: 90.00,
-    image: ImagenDefault,
+    image: DigitacionModerna,
   },
   {
     id: 2,
     name: 'Digitación Moderna con Espiral',
     price: 95.00,
-    image: ImagenDefault,
+    image: DigitacionModerna,
   },
   {
     id: 3,
     name: 'Temario de Velocidad Mecanográfica',
     price: 75.00,
-    image: ImagenDefault,
+    image: TemVelocidadMec,
   },
   {
     id: 4,
     name: 'Cuaderno de Trabajo para Práctica de Oficina I',
     price: 75.00,
-    image: ImagenDefault,
+    image: PracticadeOficina1,
   },
   {
     id: 5,
     name: 'Cuaderno de Trabajo para Práctica de Oficina II',
     price: 75.00,
-    image: ImagenDefault,
+    image: PracticadeOficina2,
   },
   {
     id: 6,
     name: 'Análisis y Aplicación de Ortografía Moderna',
     price: 175.00,
-    image: ImagenDefault,
+    image: AnalisisOrtModerna,
   },
   {
     id: 7,
     name: 'Libros de Taquigrafía Speedwriting I, II y III en Español',
     price: 75.00,
-    image: ImagenDefault,
+    image: EscrituraDefault,
   },
   {
     id: 8,
     name: 'Libros de Shorthand Speedwriting ABC, I, II, y III',
     price: 75.00,
-    image: ImagenDefault,
+    image: EscrituraDefault,
   },
   {
     id: 9,
     name: 'Taller de Dictado y Transcripción de Taquigrafía',
     price: 75.00,
-    image: ImagenDefault,
+    image: EscrituraDefault,
   },
   {
     id: 10,
     name: 'Dictation and Transcription',
     price: 75.00,
-    image: ImagenDefault,
+    image: EscrituraDefault,
   },
 ];
 

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 // Componentes a Utilizar
 import HeaderAdmin from '../Components/HeaderAdmin';
 import TextAreaSeguridad from '../Components/TextFormSeguridad';

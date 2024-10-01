@@ -1,5 +1,7 @@
 import React from 'react';
+// Estilos a Utilizar
 import '../Styles/MediosContacto.css';
+// Imagenes a Utilizar
 import EmailIcon from '../Images/gmail-logo.png';
 import TwitterIcon from '../Images/x-logo.png';
 import FacebookIcon from '../Images/facebook-logo.png';
@@ -11,27 +13,27 @@ function MediosContacto() {
       <h2>Otros Medios de Comunicación</h2>
       <ul className="redes-sociales">
         <li>
-          <a href="mailto:contacto@editorialescar.com">
+          <a href="mailto:edit.escar@gmail.com ">
             <img src={EmailIcon} alt="Correo electrónico" />
-            No Disponible
+            edit.escar@gmail.com 
           </a>
         </li>
         <li>
-          <a href="https://twitter.com/editorialescar" target="_blank" rel="noopener noreferrer">
+          <a href="https://x.com/EditorialESCAR" target="_blank" rel="noopener noreferrer">
             <img src={TwitterIcon} alt="Twitter" />
-            No Disponible
+            Editorial Escar
           </a>
         </li>
         <li>
-          <a href="https://facebook.com/editorialescar" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.facebook.com/share/PMXeQJ8mvEP2YKF5/?mibextid=qi2Omg" target="_blank" rel="noopener noreferrer">
             <img src={FacebookIcon} alt="Facebook" />
-            No Disponible
+            Editorial Escar 
           </a>
         </li>
         <li>
-          <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer">
+          <a href="https://wa.me/23621087" target="_blank" rel="noopener noreferrer">
             <img src={WhatsappIcon} alt="WhatsApp" />
-            No Disponible
+            2362-1087 / 2331-6077 
           </a>
         </li>
       </ul>

@@ -4,7 +4,9 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #F7F0E9; /* Fondo claro */
+  background-color: rgba(247, 240, 233, 0.8); /* Fondo claro */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más intensa para destacar sobre el fondo */
+  border-radius: 10px;
 }
 
 .login-header {

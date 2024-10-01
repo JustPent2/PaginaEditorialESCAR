@@ -29,6 +29,14 @@ function Inicio() {
             imagen1={Logo}
             nombre="ESCAR"
           />
+          {/* Post 2 */}
+          <Post 
+            titulo="Actualmente los sistemas de comunicación con el desarrollador no se encuentran disponibles o pueden no ser
+            efectivas, por favor cualquier comentario del sistema comunicar directamente con el desarrollador."
+            descripcion="Mensaje Administrativo"
+            imagen1={Logo}
+            nombre="ESCAR"
+          />
           {/* Espacio para nuevos post */}
         </div>
       </section>

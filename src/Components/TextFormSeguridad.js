@@ -202,8 +202,8 @@ function TextFormSeguridad() {
           }}
           className="form-control" value={rol} placeholder="Administración o Secretaría" aria-label="Username" aria-describedby="basic-addon1"/>
         </div>
-      </div>
-      <div className="card-footer text-body-secondary">
+
+        <div>
         {
           editar? 
           <div>
@@ -212,6 +212,7 @@ function TextFormSeguridad() {
           </div>
           :<button className="btn btn-success" onClick={add}>Registrar</button>
         }
+        </div>
       </div>
     </div>
 

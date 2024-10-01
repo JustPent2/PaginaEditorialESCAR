@@ -10,8 +10,8 @@
 body{
     margin: 0 auto;
     max-width: 1200px;
-    font-family: 'Lato';
-    color: #333;
+    font-family: 'Times New Roman';
+    color: #7D1628;
 }
 
 .icon-cart{
@@ -63,7 +63,6 @@ header{
     position: absolute;
     top: 50px;
     right: 0;
-
     background-color: #F7F0E9; /* Cambiado según la paleta */
     width: 400px;
     z-index: 1;

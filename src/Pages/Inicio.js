@@ -4,8 +4,12 @@ import Header from '../Components/Header';
 // Estilos a Utilizar
 import '../Styles/Inicio.css';
 // Imagenes a Utilizar
-import ImagenDefault from '../Images/FaltaImagen.png';
+//import ImagenDefault from '../Images/FaltaImagen.png';
 import LibroGen1 from '../Images/LibroGen1.jpg';
+import ImagenGaleria1 from '../Images/ImagenBase1.jpg';
+import ImagenGaleria2 from '../Images/ImagenBase2.jpg';
+import ImagenGaleria3 from '../Images/ImagenBase3.jpg';
+import ImagenGaleria4 from '../Images/ImagenBase4.jpg';
 
 function Inicio() {
   return (
@@ -14,21 +18,21 @@ function Inicio() {
       <section className="intro">
         <img src={LibroGen1} alt="Portada" className="intro-image" />
         <div className="intro-text">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam in volutpat est. 
-            Nam placerat eleifend tellus. Mauris semper, nulla eu ultrices suscipit, mauris orci 
-            sagittis elit, ac commodo dolor lacus eget libero. Fusce tincidunt, urna et rutrum bibendum, 
-            lacus arcu rutrum arcu, nec viverra nulla orci eu sem. Sed eget nisi felis. Donec id faucibus lorem. 
-            Curabitur tincidunt bibendum nibh a molestie. Suspendisse iaculis neque justo, convallis fermentum mi 
-            vestibulum non.</p>
+          <p>La editorial ESCAR se dedica a la distribución y promoción de materiales educativos 
+            especializados en la caligrafía y ortografía, sin dejar de lado otros campos de estudio 
+            para la formación de cualquier tipo de estudiante. Acompáñenos en nuestro camino en el 
+            constante desarrollo de la excelencia académica y la búsqueda por el avance inquebrantable 
+            del país de Guatemala, fomentando paso a paso la buena formación en base a nuestros excelentes 
+            recursos educativos.</p>
         </div>
       </section>
       <section className="galeria">
         <h2>Galería de Imágenes</h2>
         <div className="galeria-grid">
-          <img src={ImagenDefault} alt="Imagen 1" />
-          <img src={ImagenDefault} alt="Imagen 2" />
-          <img src={ImagenDefault} alt="Imagen 3" />
-          <img src={ImagenDefault} alt="Imagen 4" />
+          <img src={ImagenGaleria1} alt="Imagen 1" />
+          <img src={ImagenGaleria2} alt="Imagen 2" />
+          <img src={ImagenGaleria3} alt="Imagen 3" />
+          <img src={ImagenGaleria4} alt="Imagen 4" />
         </div>
       </section>
     </main>

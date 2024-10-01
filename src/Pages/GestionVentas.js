@@ -45,22 +45,16 @@ function GestionVentas() {
         <div className="tab-content">
           {activeTab === 'Pedidos' && (
             <div>
-              <h2>Gestión de Pedidos</h2>
-              <p>Contenido relacionado con los pedidos.</p>
               <GesPedidos/>
             </div>
           )}
           {activeTab === 'Consignación' && (
             <div>
-              <h2>Gestión de Consignación</h2>
-              <p>Contenido relacionado con las consignación.</p>
               <GesConsignaciones/>
             </div>
           )}
           {activeTab === 'Ventas' && (
             <div>
-              <h2>Gestión de Ventas</h2>
-              <p>Contenido relacionado con la ventas.</p>
               <GesVentas/>
             </div>
           )}

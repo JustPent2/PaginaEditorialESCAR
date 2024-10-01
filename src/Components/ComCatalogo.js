@@ -6,8 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Styles/Catalogo.css';
 // Imagenes a Utilizar
 // ICONOS
-import CartIcon from '../Images/FaltaImagen.png';
-import CloseIcon from '../Images/FaltaImagen.png';
+import CartIcon from '../Images/shopping-cart-outline.png';
+import CloseIcon from '../Images/close-outline.png';
 // IMAGENES
 //import ImagenDefault from '../Images/FaltaImagen.png';
 import DigitacionModerna from '../Images/DigitacionModerna.png';

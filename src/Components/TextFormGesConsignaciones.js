@@ -131,7 +131,8 @@ const cancelarConsignacion = (idConsignacion) => {
 
 
   return (
-    <div className="container mt-5">
+    <div className="container">
+      <h1 className="text-center mb-4">Gestión de Consignaciones</h1>
       {/* Tabla de consignaciones */}
       <table className="table table-striped">
         <thead>

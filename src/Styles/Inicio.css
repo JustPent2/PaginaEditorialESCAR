@@ -1,6 +1,8 @@
 .inicio {
   padding: 20px;
-  background-color: #F7F0E9; /* Fondo claro */
+  background-color: rgba(247, 240, 233, 0.8); /* Fondo claro con 80% de opacidad */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más intensa para destacar sobre el fondo */
+  border-radius: 10px; /* Bordes redondeados (opcional) */
 }
 
 .intro {
@@ -11,9 +13,10 @@
 
 .intro-image {
   width: 450px;
-  height: 400px;
+  height: 450px;
   align-items: center;
   border-radius: 10px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
 .intro-text {
@@ -37,7 +40,8 @@
 
 .galeria-grid img {
   width: 100%;
-  height: auto;
+  height: 200px;
+  object-fit: cover;
   border-radius: 8px;
 }
 
@@ -56,6 +60,7 @@
   background-color: #F6EBD6;
   padding: 15px;
   border-radius: 10px;
+  opacity: 0.8;
 }
 
 .anuncios {
@@ -92,7 +97,12 @@
 }
 
 body {
-  background-color: #F6EBD6; /* Fondo claro general */
+  background-image: url('../Images/FondoLibros.png');/* Fondo con Imagen*/
+  /*background-color: #F6EBD6; /* Fondo claro general */
+  background-size: cover; /* La imagen cubrirá todo el fondo */
+  background-position: center; /* Centra la imagen en el fondo */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-attachment: fixed; /* Hace que la imagen de fondo se quede fija mientras haces scroll */
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;

@@ -675,64 +675,94 @@ app.post('/procesar_venta/:id_venta', (req, res) => {
 app.put('/actualizar_detalle_venta/:id_detalle_venta', (req, res) => {
     const { id_detalle_venta } = req.params;
     const { cantidad } = req.body;
-  
-    // Validar la cantidad
-    if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
-      return res.status(400).send('La cantidad no es válida');
-    }
-  
+
     // Obtener el precio_unitario del producto y el id_venta para actualizar el total_final
     const getPrecioUnitarioQuery = `SELECT precio_unitario, id_venta FROM detalle_ventas WHERE id_detalle_venta = ?`;
-  
+
     db.query(getPrecioUnitarioQuery, [id_detalle_venta], (err, result) => {
-      if (err) {
-        return res.status(500).send('Error al obtener el precio unitario');
-      }
-  
-      if (result.length === 0) {
-        return res.status(404).send('Detalle de venta no encontrado');
-      }
-  
-      const precio_unitario = result[0].precio_unitario;
-      const id_venta = result[0].id_venta;
-      const precio_total = cantidad * precio_unitario;
-  
-      // Actualizar la cantidad y el precio_total en la tabla detalle_ventas
-      const updateQuery = `UPDATE detalle_ventas SET cantidad = ?, precio_total = ? WHERE id_detalle_venta = ?`;
-  
-      db.query(updateQuery, [cantidad, precio_total, id_detalle_venta], (err, result) => {
         if (err) {
-          return res.status(500).send('Error al actualizar el detalle de la venta');
+            return res.status(500).send('Error al obtener el precio unitario');
         }
-  
-        if (result.affectedRows === 0) {
-          return res.status(404).send('No se encontró el detalle de la venta para actualizar');
+
+        if (result.length === 0) {
+            return res.status(404).send('Detalle de venta no encontrado');
         }
-  
-        // Calcular el nuevo total_final sumando los precios_totales de todos los productos de la venta
-        const getTotalFinalQuery = `SELECT SUM(precio_total) AS total_final FROM detalle_ventas WHERE id_venta = ?`;
-  
-        db.query(getTotalFinalQuery, [id_venta], (err, totalResult) => {
-          if (err) {
-            return res.status(500).send('Error al calcular el total final de la venta');
-          }
-  
-          const total_final = totalResult[0].total_final;
-  
-          // Actualizar el total_final en la tabla ventas
-          const updateTotalFinalQuery = `UPDATE ventas SET total_final = ? WHERE id_venta = ?`;
-  
-          db.query(updateTotalFinalQuery, [total_final, id_venta], (err, result) => {
-            if (err) {
-              return res.status(500).send('Error al actualizar el total final de la venta');
-            }
-  
-            res.send('Cantidad, precio total y total final de la venta actualizados correctamente');
-          });
-        });
-      });
+
+        const id_venta = result[0].id_venta;
+
+        // Si la cantidad es 0, eliminar el detalle de venta
+        if (cantidad == 0) {
+            const deleteQuery = `DELETE FROM detalle_ventas WHERE id_detalle_venta = ?`;
+            db.query(deleteQuery, [id_detalle_venta], (err, result) => {
+                if (err) {
+                    return res.status(500).send('Error al eliminar el detalle de venta');
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).send('No se encontró el detalle de venta para eliminar');
+                }
+
+                // Calcular el nuevo total_final sumando los precios_totales de todos los productos restantes en la venta
+                const getTotalFinalQuery = `SELECT SUM(precio_total) AS total_final FROM detalle_ventas WHERE id_venta = ?`;
+                db.query(getTotalFinalQuery, [id_venta], (err, totalResult) => {
+                    if (err) {
+                        return res.status(500).send('Error al calcular el total final de la venta');
+                    }
+
+                    const total_final = totalResult[0].total_final || 0; // En caso de que no haya más productos, total_final será 0
+
+                    // Actualizar el total_final en la tabla ventas
+                    const updateTotalFinalQuery = `UPDATE ventas SET total_final = ? WHERE id_venta = ?`;
+                    db.query(updateTotalFinalQuery, [total_final, id_venta], (err, result) => {
+                        if (err) {
+                            return res.status(500).send('Error al actualizar el total final de la venta');
+                        }
+
+                        res.send('Detalle de venta eliminado y total final de la venta actualizado correctamente');
+                    });
+                });
+            });
+        } else {
+            // Si la cantidad es mayor que 0, actualizar el detalle de venta
+            const precio_unitario = result[0].precio_unitario;
+            const precio_total = cantidad * precio_unitario;
+
+            const updateQuery = `UPDATE detalle_ventas SET cantidad = ?, precio_total = ? WHERE id_detalle_venta = ?`;
+
+            db.query(updateQuery, [cantidad, precio_total, id_detalle_venta], (err, result) => {
+                if (err) {
+                    return res.status(500).send('Error al actualizar el detalle de la venta');
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).send('No se encontró el detalle de la venta para actualizar');
+                }
+
+                // Calcular el nuevo total_final sumando los precios_totales de todos los productos de la venta
+                const getTotalFinalQuery = `SELECT SUM(precio_total) AS total_final FROM detalle_ventas WHERE id_venta = ?`;
+
+                db.query(getTotalFinalQuery, [id_venta], (err, totalResult) => {
+                    if (err) {
+                        return res.status(500).send('Error al calcular el total final de la venta');
+                    }
+
+                    const total_final = totalResult[0].total_final;
+
+                    // Actualizar el total_final en la tabla ventas
+                    const updateTotalFinalQuery = `UPDATE ventas SET total_final = ? WHERE id_venta = ?`;
+
+                    db.query(updateTotalFinalQuery, [total_final, id_venta], (err, result) => {
+                        if (err) {
+                            return res.status(500).send('Error al actualizar el total final de la venta');
+                        }
+
+                        res.send('Cantidad, precio total y total final de la venta actualizados correctamente');
+                    });
+                });
+            });
+        }
     });
-  });
+});
 
 // OPERACIONES DE BASE DE DATOS CON LA TABLA DE "REGISTROS" PARA INTERNO-----------------------------------------------
 

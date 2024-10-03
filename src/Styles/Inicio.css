@@ -1,5 +1,4 @@
 .inicio {
-  padding: 20px;
   background-color: rgba(247, 240, 233, 0.8); /* Fondo claro con 80% de opacidad */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más intensa para destacar sobre el fondo */
   border-radius: 10px; /* Bordes redondeados (opcional) */
@@ -30,6 +29,7 @@
 
 .galeria {
   margin: 100px;
+  padding: 20px;
 }
 
 .galeria-grid {
@@ -50,7 +50,6 @@
   flex: 1;
   text-align: justify;
   font-size: 25px;
-  padding: 20px;
   border-radius: 8px;
   color: #7D1628;
 }

@@ -74,8 +74,11 @@ const procesarConsignacion = (idConsignacion) => {
 const modificarPlazo = (idConsignacion) => {
   Swal.fire({
     title: 'Modificar Plazo',
-    input: 'text',
-    inputLabel: 'Ingresa la nueva fecha de plazo (YYYY-MM-DD)',
+    input: 'date', // Cambiado a tipo de entrada "date" para facilitar la selección de fecha
+    inputLabel: 'Selecciona la nueva fecha de plazo',
+    inputAttributes: {
+      min: new Date().toISOString().split('T')[0] // Establece la fecha mínima como la fecha actual
+    },
     showCancelButton: true,
     confirmButtonText: 'Modificar',
     cancelButtonText: 'Cancelar'

@@ -13,13 +13,13 @@ function Header() {
         <h1>Editorial ESCAR</h1>
       </div>
       <nav className="nav-menu">
-        <a href="/inicio">Inicio</a>
-        <a href="/quienes-somos">¿Quiénes somos?</a>
-        <a href="/anuncios">Anuncios</a>
-        <a href="/comenycontac">Comentarios y Contacto</a>
-        <a href="/catalogo">Catálogo</a>
+        <a href="/PaginaEditorialESCAR/inicio">Inicio</a>
+        <a href="/PaginaEditorialESCAR/quienes-somos">¿Quiénes somos?</a>
+        <a href="/PaginaEditorialESCAR/anuncios">Anuncios</a>
+        <a href="/PaginaEditorialESCAR/comenycontac">Comentarios y Contacto</a>
+        <a href="/PaginaEditorialESCAR/catalogo">Catálogo</a>
       </nav>
-      <a href="/iniciosesion" className="login-button">Inicio de Sesión</a>
+      <a href="/PaginaEditorialESCAR/iniciosesion" className="login-button">Inicio de Sesión</a>
     </header>
   );
 }

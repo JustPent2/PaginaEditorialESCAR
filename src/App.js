@@ -19,11 +19,10 @@ import Registros from './Pages/Registros';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/PaginaEditorialESCAR">
       <Routes>
         {/* Ruta predeterminada que redirige a /inicio */}
-        <Route path="/" element={<Navigate to="/inicio" />} />
-        
+        <Route path="/" element={<Navigate to="/inicio" />} />       
         {/* Rutas normales */}
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/quienes-somos" element={<QuienesSomos />} />
@@ -37,8 +36,7 @@ function App() {
         <Route path="/Gv3nt4_Mngt!2024" element={<GestionVentas />} />
         <Route path="/1nv@T_0562!xyz" element={<Inventario />} />
         <Route path="/XqF4!S3Cur1tY" element={<Seguridad />} />
-        <Route path="/R3gY_@9834xQr" element={<Registros />} />
-        
+        <Route path="/R3gY_@9834xQr" element={<Registros />} />   
       </Routes>
     </Router>
   );

@@ -10,7 +10,7 @@ app.use(express.json());
 
 // INDICACIÓN GENERAL DE USO DE BASE DE DATOS
 const db = mysql.createConnection({
-    host: "localhost",
+    host: "127.0.0.1",
     user: "root",
     password: "12345",
     database: "editorial_db"
